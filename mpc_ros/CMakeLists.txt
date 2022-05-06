@@ -5,7 +5,7 @@ project(mpc_ros)
 add_definitions(-std=c++11 -O3)
 
 # options for build configuration
-option(BUILD_EXAMPLE "Whether or not building the CppAD & Ipopt example" OFF) 
+option(BUILD_EXAMPLE "Whether or not building the CppAD & Ipopt example" OFF)
 
 ## Find catkin macros and libraries
 ## if COMPONENTS list like find_package(catkin REQUIRED COMPONENTS xyz)
@@ -51,7 +51,7 @@ catkin_package(
 ## Build ##
 ###########
 
-# General MPC_Node 
+# General MPC_Node
 ADD_EXECUTABLE( MPC_Node src/MPC.cpp src/MPC_Node.cpp )
 TARGET_LINK_LIBRARIES(MPC_Node ipopt ${catkin_LIBRARIES} )
 
@@ -81,7 +81,43 @@ TARGET_LINK_LIBRARIES(mpc_ros ipopt ${catkin_LIBRARIES} )
 if(BUILD_EXAMPLE)
     ADD_EXECUTABLE( CppAD_started example/CppAD_started.cpp )
     TARGET_LINK_LIBRARIES(CppAD_started)
-    
+
     ADD_EXECUTABLE( CppAD_Ipopt example/CppAD_Ipopt.cpp )
     TARGET_LINK_LIBRARIES(CppAD_Ipopt ipopt)
 endif(BUILD_EXAMPLE)
+
+#############
+## Install ##
+#############
+
+install(FILES
+    ../assets/mpc.csv
+    global_planner_plugin.xml
+    mpc_plugin.xml
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+)
+
+install(TARGETS
+    MPC_Node
+    nav_mpc
+    tracking_reference_trajectory
+  RUNTIME DESTINATION ${CATKIN_PACKAGE_BIN_DESTINATION}
+)
+
+install(TARGETS
+    mpc_ros
+  ARCHIVE DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  LIBRARY DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+  RUNTIME DESTINATION ${CATKIN_GLOBAL_BIN_DESTINATION}
+)
+
+install(DIRECTORY
+    include
+  DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+)
+
+install(DIRECTORY
+    cfg
+    launch
+  DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+)
